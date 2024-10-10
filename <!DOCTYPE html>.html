@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerar NISS Fresquinho</title>
+</head>
+<body style="background-color: #f2f2f2;">
+    <div style="margin: auto;margin-top: 15vw;background-color: #f3f3f3;width: fit-content;padding: 1em;border-radius: 0.2em;box-shadow: 0px 0px 5px black;font-family: sans-serif;font-size: x-large;text-align: center;">
+        <h1>NISS Fresquinho</h1>
+        <input type="text" id="txtNiss" readonly="" style="font-size: x-large;">
+        <select id="nissOpt" style="font-size: x-large;">
+            <option value="1">Ativo</option>
+        </select>
+        <input type="button" id="geraNovoNiss" value="GERAR" onclick="getNewNiss()" style="font-size: x-large;">
+    </div>
+</body>
+<script>
+    const IsValidNiss = (niss) => {
+        const listPrimos = [29, 23, 19, 17, 13, 11, 7, 5, 3, 2];
+
+        niss = Array.from(String(niss), Number);
+
+        if ((niss == null && niss == '') ||
+            (niss.length != 9 && niss.length != 11) ||
+            (niss[0] != '1' && niss[0] != '2'))
+            return false;
+
+        var sum = niss[niss.length - 1];
+
+        for (var i = listPrimos.length - 1, j = niss.length - 2; i >= 0 && j >= 0; i-- , j--) {
+            var multiplication = listPrimos[i] * niss[j];
+
+            sum += multiplication;
+        }
+
+        return sum % 10 == 9;
+    }
+
+    const getNearestValidNiss = (seed) => {
+        let cur = seed
+        while(!IsValidNiss(cur)) {
+            cur++;
+        }
+        return cur;
+    }
+
+    // Active
+
+    const baseNiss = 10000000000;
+
+    const getRandSeed = () => Math.floor(Math.random() * baseNiss) + baseNiss;
+
+    const getNewValidNiss = () => {
+        const txtNiss = document.querySelector("#txtNiss");
+        txtNiss.value = getNearestValidNiss(getRandSeed());
+    }
+
+    const getNewNiss = () => {
+        const opt = document.querySelector("#nissOpt option:checked").value;
+
+        switch(opt) {
+            default: getNewValidNiss(); break;
+        }
+    }
+</script>
+</html>
